@@ -359,12 +359,193 @@ cmd_import() {
             echo -e "${BLUE}导出信息:${NC}"
             cat "$import_dir/export-metadata.json"
         fi
+
+        # 自动更新索引
+        update_index
     else
         echo -e "${RED}✗ 无效的导出文件${NC}"
     fi
 
     # 清理
     rm -rf "$temp_dir"
+}
+
+# 更新索引文件
+update_index() {
+    local project_dir=$(get_project_dir)
+    local index_file=""
+
+    # 判断使用哪个索引文件
+    if [ -f "$project_dir/MEMORY.md" ]; then
+        index_file="$project_dir/MEMORY.md"
+    elif [ -f "$project_dir/PROJECTS.md" ]; then
+        index_file="$project_dir/PROJECTS.md"
+    else
+        echo -e "${YELLOW}没有找到索引文件，跳过更新${NC}"
+        return 0
+    fi
+
+    echo -e "${BLUE}正在更新索引...${NC}"
+
+    # 备份索引文件
+    cp "$index_file" "$index_file.backup"
+
+    # 查找所有project_work文件
+    local project_files=()
+    while IFS= read -r -d '' file; do
+        local type=$(parse_frontmatter "$file" "type")
+        if [ "$type" = "project_work" ]; then
+            project_files+=("$file")
+        fi
+    done < <(find "$project_dir" -maxdepth 1 -name "project_work_*.md" -type f -print0)
+
+    if [ ${#project_files[@]} -eq 0 ]; then
+        echo -e "${YELLOW}没有找到项目文件${NC}"
+        return 0
+    fi
+
+    # 生成新的项目跟踪章节内容
+    local new_entries=""
+    for file in "${project_files[@]}"; do
+        local name=$(parse_frontmatter "$file" "name")
+        local status=$(parse_frontmatter "$file" "status")
+        local desc=$(parse_frontmatter "$file" "description")
+        local filename=$(basename "$file")
+
+        new_entries+="- [$name]($filename) — $status | $desc"$'\n'
+    done
+
+    # 更新MEMORY.md或PROJECTS.md
+    if [ -f "$project_dir/MEMORY.md" ]; then
+        # 使用awk更新"## 项目跟踪"章节
+        awk -v new_content="$new_entries" '
+            BEGIN { in_section=0; printed=0 }
+            /^## 项目跟踪$/ {
+                print $0
+                print ""
+                printf "%s", new_content
+                in_section=1
+                printed=1
+                next
+            }
+            /^##[[:space:]]/ && in_section==1 {
+                in_section=0
+            }
+            in_section==0 { print }
+        ' "$index_file" > "$index_file.tmp"
+        mv "$index_file.tmp" "$index_file"
+    fi
+
+    echo -e "${GREEN}✓ 索引已更新${NC}"
+}
+
+# 创建新项目
+cmd_create() {
+    local project_name="$1"
+
+    if [ -z "$project_name" ]; then
+        echo -e "${RED}✗ 请提供项目名称${NC}"
+        echo "用法: project-tracker.sh create <项目名称>"
+        return 1
+    fi
+
+    local project_dir=$(get_project_dir)
+
+    if [ ! -d "$project_dir" ]; then
+        echo -e "${RED}✗ 项目目录不存在: $project_dir${NC}"
+        echo "请先运行: /setup-projects"
+        return 1
+    fi
+
+    # 生成文件名（转换为slug）
+    local slug=$(echo "$project_name" | tr '[:upper:]' '[:lower:]' | tr ' ' '_' | tr -cd '[:alnum:]_')
+    local filename="project_work_${slug}.md"
+    local filepath="$project_dir/$filename"
+
+    if [ -f "$filepath" ]; then
+        echo -e "${RED}✗ 项目文件已存在: $filename${NC}"
+        return 1
+    fi
+
+    # 交互式输入
+    echo -e "${BLUE}创建新项目: $project_name${NC}"
+    echo ""
+
+    read -p "简短描述: " description
+    echo ""
+    echo "初始状态:"
+    echo "  1) pending  - 计划中"
+    echo "  2) active   - 进行中"
+    read -p "选择 [1-2, 默认1]: " status_choice
+
+    local status="pending"
+    if [ "$status_choice" = "2" ]; then
+        status="active"
+    fi
+
+    read -p "标签 (逗号分隔，可选): " tags_input
+
+    # 处理标签
+    local tags_yaml=""
+    if [ -n "$tags_input" ]; then
+        tags_yaml="tags:"$'\n'
+        IFS=',' read -ra TAGS <<< "$tags_input"
+        for tag in "${TAGS[@]}"; do
+            tag=$(echo "$tag" | xargs) # trim空格
+            tags_yaml+="  - $tag"$'\n'
+        done
+    fi
+
+    local today=$(date +%Y-%m-%d)
+
+    # 创建项目文件
+    cat > "$filepath" << EOF
+---
+name: $project_name
+description: $description
+type: project_work
+status: $status
+created: $today
+updated: $today
+${tags_yaml}---
+
+## 项目背景
+
+TODO: 描述项目背景和目标
+
+## 当前进展
+
+### 已完成
+- ✅ 项目立项
+
+### 进行中
+- 🔄 TODO
+
+### 待完成
+- ⏳ TODO
+
+## 相关资源
+
+- 文档：
+- 代码：
+
+---
+
+最后更新：$today
+EOF
+
+    echo ""
+    echo -e "${GREEN}✓ 项目已创建: $filepath${NC}"
+    echo ""
+
+    # 自动更新索引
+    update_index
+
+    echo ""
+    echo -e "${BLUE}提示：${NC}"
+    echo "  • 使用编辑器打开: vi $filepath"
+    echo "  • 查看项目列表: /list-pros"
+    echo "  • 查看项目详情: /list-pros --detail"
 }
 
 # 主函数
@@ -385,9 +566,15 @@ main() {
         import)
             cmd_import "$@"
             ;;
+        create)
+            cmd_create "$@"
+            ;;
+        update-index)
+            update_index
+            ;;
         *)
             echo -e "${RED}✗ 未知命令: $command${NC}"
-            echo "可用命令: setup, list, export, import"
+            echo "可用命令: setup, list, export, import, create, update-index"
             return 1
             ;;
     esac
