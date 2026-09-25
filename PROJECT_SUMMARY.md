@@ -242,8 +242,8 @@ Skill文件不直接执行，而是告诉 Claude 如何操作，更加灵活可�
 - ✅ 已安装到 `~/.claude/skills/`
 - ✅ 已配置项目目录：`~/.claude/projects/-Volumes-volume2-aicloud/memory/`
 - ✅ 已检测到2个现有项目：
-  - VFIO热迁移分析工作 (active)
-  - NCCL初始化文档工作 (active)
+  - 网络驱动优化工作 (active)
+  - 通信库文档工作 (active)
 
 ### 验证通过
 - ✅ `/list-pros` 命令在 Claude Code 中正常工作

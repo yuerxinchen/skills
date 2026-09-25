@@ -223,7 +223,7 @@ tags:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 项目名称          状态      更新时间      描述
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-VFIO热迁移分析    active    2026-06-10    VFIO和MLX5驱动...
+网络驱动优化      active    2026-06-10    高性能网络驱动...
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 总计: 1 个项目
 ```
@@ -551,7 +551,42 @@ nn-skills/
 
 ## 许可证
 
-MIT License
+MIT License - 详见 [LICENSE](LICENSE) 文件
+
+---
+
+## 致谢与声明
+
+### 灵感来源
+
+本项目的开发受到以下优秀项目和资源的启发：
+
+- **[mattpocock-skills](https://github.com/mattpocock/claude-code-skills)** - Matt Pocock 的 Claude Code skills 集合
+  - 特别感谢其 domain-modeling、grilling 等 skills 提供的设计理念
+  - 本项目参考了其文档组织和 ADR 管理的最佳实践
+  
+- **[Claude Code 官方文档](https://docs.anthropic.com/claude/docs)** - Anthropic 团队提供的平台文档
+  - Skills 开发规范和热重载机制
+  - Memory 系统的集成方式
+
+- **ADR (Architecture Decision Records)** - 社区标准的架构决策记录格式
+  - Michael Nygard 的 ADR 格式规范
+  - ThoughtWorks 的技术雷达推荐实践
+
+### 独立性声明
+
+**重要**：本项目是完全独立开发的工具，具有以下特点：
+
+- ✅ **独立代码库**：所有代码均为原创开发，不包含任何第三方专有代码
+- ✅ **不隶属关系**：本项目不隶属于 Anthropic、Matt Pocock 或上述任何项目
+- ✅ **合理使用**：对外部 skills 的引用仅限于功能名称和使用说明，符合合理使用原则
+- ✅ **开源协议**：基于 MIT License 发布，允许自由使用、修改和分发
+
+### 商标声明
+
+本文档中提到的所有商标和品牌名称归其各自所有者所有：
+- "Claude" 和 "Claude Code" 是 Anthropic 的商标
+- 其他提及的产品和服务名称可能是其各自公司的商标
 
 ---
 

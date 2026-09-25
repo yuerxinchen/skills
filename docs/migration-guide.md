@@ -28,7 +28,7 @@
 - ✅ Git友好的Markdown存储格式
 
 **设计理念**：
-- **项目定义**：长期工作主题（如"AAS插件开发"、"NCCL源码研究"）
+- **项目定义**：长期工作主题（如"插件开发"、"系统研究"）
 - **存储方式**：每个项目一个Markdown文件 + 统一索引
 - **配置机制**：工作目录独立配置，支持多项目并行
 
@@ -289,8 +289,8 @@ ln -s ~/dev/project-tracker ~/.claude/skills/project-tracker
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 项目名称                        状态           更新时间          描述
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-VFIO热迁移分析                  active         2026-06-10        VFIO和MLX5驱动热迁移机制研究
-NCCL初始化文档                  active         2026-06-28        initTransportsRank.md文档编写
+网络驱动优化                    active         2026-06-10        高性能网络驱动研究
+通信库文档                      active         2026-06-28        通信库初始化文档编写
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 总计: 2 个项目
 ```
@@ -299,16 +299,16 @@ NCCL初始化文档                  active         2026-06-28        initTransp
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 项目: VFIO热迁移分析
+📋 项目: 网络驱动优化
 状态: active
 创建: 2026-06-10 | 更新: 2026-06-10
-描述: VFIO和MLX5驱动热迁移机制研究
+描述: 高性能网络驱动研究
 
 📁 相关文件:
-  - /Volumes/volume2/aicloud/doc/vfio_热迁移分析.md
-  - /Volumes/volume2/aicloud/doc/mlx5_vfio_热迁移实现分析.md
+  - /path/to/project/doc/driver_analysis.md
+  - /path/to/project/doc/performance_optimization.md
 
-🏷️  标签: vfio, mlx5, migration, rdma
+🏷️  标签: network, driver, performance, optimization
 
 📝 详细说明:
 [显示项目正文内容]
@@ -476,9 +476,9 @@ originSessionId: optional-session-id
 **格式**：`project_work_<slug>.md`
 
 **示例**：
-- `project_work_vfio_migration.md` - VFIO热迁移分析
-- `project_work_nccl_init_doc.md` - NCCL初始化文档
-- `project_work_aas_plugin_dev.md` - AAS插件开发
+- `project_work_network_driver.md` - 网络驱动优化
+- `project_work_comm_lib_doc.md` - 通信库文档
+- `project_work_plugin_dev.md` - 插件开发
 
 **命名规则**：
 - 前缀：`project_work_` - 标识为项目工作记录
@@ -489,60 +489,59 @@ originSessionId: optional-session-id
 
 ```markdown
 ---
-name: NCCL AllReduce GDAKI实现研究
-description: 深入研究NCCL AllReduce在GDAKI后端的完整实现机制
+name: 分布式系统优化研究
+description: 深入研究分布式系统在特定场景下的性能优化机制
 type: project_work
 status: active
 created: 2026-09-15
 updated: 2026-09-25
 files:
-  - /Users/nana/SRC/aicloud/doc/glm-nccl-allreduce.md
-  - /Users/nana/SRC/aicloud/.claude/nccl_gdaki_memory.md
+  - /path/to/project/doc/system-optimization.md
+  - /path/to/project/.claude/optimization_memory.md
 tags:
-  - nccl
-  - allreduce
-  - gdaki
-  - wqe
-  - qp
+  - distributed
+  - optimization
+  - performance
+  - research
 ---
 
 ## 项目背景
 
-研究NCCL AllReduce集合通信操作在GDAKI（GPU Direct RDMA with Kernel Assist）后端的完整实现。
+研究分布式系统的性能优化方案和实现机制。
 
 ## 当前进展
 
 ### 已完成
-- ✅ 4节点×4GPU扩展场景分析（第12章）
-- ✅ GDAKI WQE与QP操作详解（第13章）
-- ✅ 16-rank测试场景构建
+- ✅ 多节点扩展场景分析
+- ✅ 核心算法详解
+- ✅ 测试场景构建
 
 ### 进行中
-- 🔄 proxyProgress调用链完整追踪
-- 🔄 KernelFinishCallback机制深入分析
+- 🔄 调用链完整追踪
+- 🔄 回调机制深入分析
 
 ### 待完成
-- ⏳ GDAKI与标准RDMA性能对比
+- ⏳ 性能对比测试
 - ⏳ 多节点场景的完整测试验证
 
 ## 关键文档
 
-主工作文档：`glm-nccl-allreduce.md`（~2900行，13章）
-- 第9章：GDAKI Backend深度实现
-- 第12章：4节点×4GPU扩展示例
-- 第13章：GDAKI WQE与QP操作详解
+主工作文档：`system-optimization.md`（~2900行，13章）
+- 第9章：核心实现深度分析
+- 第12章：多节点扩展示例
+- 第13章：关键操作详解
 
-研究上下文记忆：`.claude/nccl_gdaki_memory.md`
+研究上下文记忆：`.claude/optimization_memory.md`
 
 ## 参考资源
 
-- NCCL源码：`/Users/nana/SRC/aicloud/nccl_src_2.30/`
-- AAS插件代码：`/Volumes/volume2/aicloud/aas/src/nccl-plugin/`
+- 系统源码：`/path/to/system/source/`
+- 插件代码：`/path/to/plugins/`
 
 ## 里程碑
 
 - [x] 2026-09-15 项目启动
-- [x] 2026-09-20 完成GDAKI后端基础分析
+- [x] 2026-09-20 完成基础分析
 - [ ] 2026-10-01 完成性能对比测试
 - [ ] 2026-10-15 完成多节点验证
 

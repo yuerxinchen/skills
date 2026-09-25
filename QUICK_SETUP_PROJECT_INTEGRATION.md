@@ -4,6 +4,28 @@
 
 这份文档用于在新机器上快速配置**项目自动识别**和**文档自动路由**功能，使得 `/list-pros` 项目跟踪系统能够与 `/grill-with-docs`、`/domain-modeling` 等 skills 自动联动。
 
+## 📜 许可声明
+
+**版权所有 (c) 2026 nana**
+
+本文档基于 MIT License 发布（见项目根目录的 LICENSE 文件）。
+
+### 依赖项说明
+
+- **平台**：本配置方案设计用于 [Claude Code](https://claude.ai/code) 平台（Anthropic 官方产品）
+- **Skills 生态**：文档中提到的 skills（如 `mattpocock-skills` 中的 `grill-with-docs`、`domain-modeling`）为 Claude Code 生态系统的公开可用组件
+- **内容性质**：本文档仅说明如何配置和使用这些功能，**不包含任何第三方专有代码**
+- **合理使用**：对外部 skills 的引用仅限于功能名称和使用说明，符合合理使用原则
+
+### 致谢
+
+本配置方案的灵感和参考来源：
+- **[mattpocock-skills](https://github.com/mattpocock/claude-code-skills)** - Matt Pocock 的优秀 Claude Code skills 集合，特别是其 domain-modeling 和 grilling skills 的设计理念
+- **Claude Code 官方文档** - Anthropic 团队提供的平台文档和最佳实践
+- **ADR 格式规范** - 架构决策记录的社区标准格式
+
+**免责声明**：本项目是独立开发的工具，不隶属于上述任何项目或组织。所有商标和品牌名称归其各自所有者所有。
+
 **配置后的效果：**
 - 说项目名称 → 自动切换项目上下文
 - 提到代码路径 → 自动识别所属项目
@@ -52,14 +74,14 @@
 ```
 现有项目的 doc_dir 映射：
 
-project_work_dpdk.md               → doc/project/dpdk/
-project_work_nccl_optimization.md  → doc/project/nccl-optimization/
-project_work_nccl_plugin.md        → doc/project/nccl-plugin/
+project_work_project1.md  → doc/project/project1/
+project_work_project2.md  → doc/project/project2/
+project_work_project3.md  → doc/project/project3/
 
 别名建议：
-- DPDK项目：DPDK、dpdk、DPDK研究、dpdk研究、RDMA、rdma
-- NCCL优化：NCCL、nccl、NCCL优化、nccl优化、优化
-- NCCL插件：NCCL插件、nccl插件、AAS插件、aas插件、插件
+- 项目1：Project1、project1、项目1简称
+- 项目2：Project2、project2、项目2简称
+- 项目3：Project3、project3、项目3简称
 ```
 
 ### 步骤 3：验证配置
@@ -68,10 +90,10 @@ project_work_nccl_plugin.md        → doc/project/nccl-plugin/
 
 ```
 # 测试 1：显式项目切换
-"看一下 NCCL优化项目"
+"看一下项目1"
 
 # 测试 2：自动识别
-"调用 /grill-with-docs 分析 GDAKI 的设计决策"
+"调用 /grill-with-docs 分析某个设计决策"
 
 # 测试 3：列出项目
 "/list-pros"
@@ -186,8 +208,8 @@ files:
 默认规则：项目名 → 小写 → 空格转连字符
 
 ```
-"NCCL优化"  → "nccl-optimization"
-"DPDK研究"  → "dpdk"
+"项目优化"  → "project-optimization"
+"系统研究"  → "system-research"
 "性能测试"  → "performance-testing"
 ```
 
@@ -214,13 +236,12 @@ aliases:
 
 **示例：**
 ```yaml
-# NCCL优化项目
+# 示例项目
 aliases:
-  - NCCL
-  - nccl
-  - NCCL优化
-  - collective
-  - 集合通信
+  - 项目A
+  - ProjectA
+  - 项目A优化
+  - 技术栈名称
 ```
 
 ### 参数 4：现有文档迁移策略
@@ -286,40 +307,40 @@ type: feedback
 
 ### 场景 1：显式项目切换
 ```
-用户："看一下 NCCL优化项目"
-期望：Claude 回复确认已切换，并说明文档将创建在 doc/project/nccl-optimization/
+用户："看一下项目A"
+期望：Claude 回复确认已切换，并说明文档将创建在 doc/project/project-a/
 ```
 
 ### 场景 2：路径推断
 ```
-用户："分析 aas/src/nccl-plugin/ib_plugin.cc 的实现"
-期望：Claude 自动识别为 NCCL插件项目
+用户："分析 src/module/core.cc 的实现"
+期望：Claude 自动识别为对应项目
 ```
 
 ### 场景 3：关键词推断
 ```
-用户："调用 /grill-with-docs 讨论 GDAKI 的设计决策"
+用户："调用 /grill-with-docs 讨论某个技术选型的设计决策"
 期望：
-1. Claude 识别 "GDAKI" 关联到 NCCL优化项目
-2. 创建 ADR 到 doc/project/nccl-optimization/adr/0001-xxx.md
+1. Claude 识别关键词关联到对应项目
+2. 创建 ADR 到 doc/project/<项目名>/adr/0001-xxx.md
 ```
 
 ### 场景 4：多项目匹配
 ```
-用户："看一下 NCCL 相关的东西"
+用户："看一下优化相关的东西"
 期望：Claude 展示匹配的项目列表，让用户选择
 ```
 
 ### 场景 5：跨项目分析
 ```
-用户："对比 NCCL 源码和 AAS 插件的实现差异"
+用户："对比项目A和项目B的实现差异"
 期望：Claude 识别为跨项目操作，文档创建在 doc/ 根目录
 ```
 
 ### 场景 6：CONTEXT.md 创建
 ```
-用户："记录 GDAKI 这个术语到项目词汇表"
-期望：创建或更新 doc/project/nccl-optimization/CONTEXT.md
+用户："记录某个术语到项目词汇表"
+期望：创建或更新 doc/project/<项目名>/CONTEXT.md
 ```
 
 ---
